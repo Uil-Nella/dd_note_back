@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.dd.note.back.boot.mapper.UserInfoMapper">
+	<sql id='TABLE_NAME'>userinfo</sql>
+	<resultMap id="result" type="user">
+		<result property="code" column="code" />
+		<result property="name" column="name" />
+		<result property="password" column="password" />
+		<result property="email" column="email" />
+		<result property="level" column="level" />
+		<result property="voluname" column="voluname" />
+		<result property="dr" column="dr" />
+	</resultMap>
+
+	<insert id="addUser" useGeneratedKeys="true" parameterType="user" keyProperty="id" >
+		 <selectKey keyProperty="id" resultType="int" order="BEFORE">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO <include refid="TABLE_NAME" />
+		(code,name,password,email,level,voluname,dr)
+		VALUE (#{code},#{name},#{password},#{email},#{level},#{voluname},#{dr})
+	</insert>
+
+
+	<select id="getAllUser" resultMap="result">
+		SELECT code,name,password,email,level,voluname,dr
+		FROM userinfo;
+	</select>
+
+	<select id="getUserByCode" parameterType="String" resultMap="result">
+		SELECT code,name,password,email,level,voluname,dr
+		FROM userinfo where code = #{code};
+	</select>
+
+	<delete id="deleteByCode" parameterType="string">
+		DELETE FROM
+		userinfo
+		WHERE code = #{code}
+	</delete>
+
+	<update id="update" parameterType="user">
+		UPDATE user_table
+		<set>
+			<if test="name != null ">name = #{name},</if>
+			<if test="password != null ">password = #{password}</if>
+		</set>
+		WHERE code = #{code}
+	</update>
+
+</mapper>
